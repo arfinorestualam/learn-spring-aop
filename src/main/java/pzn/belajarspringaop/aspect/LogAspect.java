@@ -105,6 +105,12 @@ public class LogAspect {
     public void logAllServiceMethod() {
         log.info("Log for all service methods");
     }
+
+    // passing parameter advice menggunakan args
+    @Before("pointCutHelloServiceStringParam() && args(name)")
+    public void logStringParameter(String name) {
+        log.info("Execute method with parameter : {}", name);
+    }
 }
 
 //join point dengan beraturan dan berjalan hanya di level method adalah
