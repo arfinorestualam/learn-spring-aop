@@ -2,6 +2,8 @@ package pzn.belajarspringaop.aspect;
 
 import lombok.extern.slf4j.Slf4j;
 import org.aspectj.lang.JoinPoint;
+import org.aspectj.lang.ProceedingJoinPoint;
+import org.aspectj.lang.annotation.Around;
 import org.aspectj.lang.annotation.Aspect;
 import org.aspectj.lang.annotation.Before;
 import org.aspectj.lang.annotation.Pointcut;
@@ -43,11 +45,30 @@ public class LogAspect {
 
     //penggunaan advice parameter dengan joinpoint
 
-    @Before("helloServiceMethod()")
-    public void beforeHelloServiceMethod(JoinPoint joinPoint) {
+//    @Before("helloServiceMethod()")
+//    public void beforeHelloServiceMethod(JoinPoint joinPoint) {
+//        String className = joinPoint.getTarget().getClass().getSimpleName();
+//        String methodName = joinPoint.getSignature().getName();
+//        log.info("Before , Class Name: {}, Method Name: {}", className, methodName);
+//    }
+
+    //untuk advice around, harus menggunakan parameter proceedingjoinpoint
+    //jika tidak, tidak akan berjalan, jangan lupa untuk proceed dengan args
+
+    @Around("helloServiceMethod()")
+    public Object aroundHelloServiceMethod(ProceedingJoinPoint joinPoint) throws Throwable {
         String className = joinPoint.getTarget().getClass().getSimpleName();
         String methodName = joinPoint.getSignature().getName();
-        log.info("Before , Class Name: {}, Method Name: {}", className, methodName);
+
+        try {
+            log.info("Around Before , Class Name: {}, Method Name: {}", className, methodName);
+            return joinPoint.proceed(joinPoint.getArgs());
+        } catch (Throwable throwable) {
+            log.error("Around Error {}.{}()", className, methodName, throwable);
+            throw throwable;
+        } finally {
+            log.info("Around finally , Class Name: {}, Method Name: {}", className, methodName);
+        }
     }
 }
 
