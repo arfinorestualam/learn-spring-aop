@@ -1,6 +1,7 @@
 package pzn.belajarspringaop.aspect;
 
 import lombok.extern.slf4j.Slf4j;
+import org.aspectj.lang.JoinPoint;
 import org.aspectj.lang.annotation.Aspect;
 import org.aspectj.lang.annotation.Before;
 import org.aspectj.lang.annotation.Pointcut;
@@ -32,13 +33,22 @@ public class LogAspect {
     //advice juga bisa lebih dari 1, dengan annotation yang sama dan target yang sama,
     //ubah method dengan isi yang beda dikit masih bisa tetap jalan.
 
-    @Before("helloServiceMethod()")
-    public void beforeHelloServiceMethod() {
-        log.info("Before HelloService Method");
-    }
+//    @Before("helloServiceMethod()")
+//    public void beforeHelloServiceMethod() {
+//        log.info("Before HelloService Method");
+//    }
     //arti dari method diatas adalah, sebelum pointcut menjalankan target
     //maka method ini akan dijalankan terlebih dahulu dengan menghasilkan
     //log sebagai bukti kalo sudah berjalan.
+
+    //penggunaan advice parameter dengan joinpoint
+
+    @Before("helloServiceMethod()")
+    public void beforeHelloServiceMethod(JoinPoint joinPoint) {
+        String className = joinPoint.getTarget().getClass().getSimpleName();
+        String methodName = joinPoint.getSignature().getName();
+        log.info("Before , Class Name: {}, Method Name: {}", className, methodName);
+    }
 }
 
 //join point dengan beraturan dan berjalan hanya di level method adalah
