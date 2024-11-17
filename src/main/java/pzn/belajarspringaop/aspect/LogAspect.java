@@ -1,9 +1,11 @@
 package pzn.belajarspringaop.aspect;
 
 import lombok.extern.slf4j.Slf4j;
+import org.aspectj.lang.JoinPoint;
 import org.aspectj.lang.ProceedingJoinPoint;
 import org.aspectj.lang.annotation.Around;
 import org.aspectj.lang.annotation.Aspect;
+import org.aspectj.lang.annotation.Before;
 import org.aspectj.lang.annotation.Pointcut;
 import org.springframework.stereotype.Component;
 
@@ -20,6 +22,8 @@ import org.springframework.stereotype.Component;
 @Aspect
 @Component
 public class LogAspect {
+
+    //poincut dengan expresion target yang sederhana
 
     @Pointcut("target(pzn.belajarspringaop.service.HelloService)")
     public void helloServiceMethod() {
@@ -67,6 +71,20 @@ public class LogAspect {
         } finally {
             log.info("Around finally , Class Name: {}, Method Name: {}", className, methodName);
         }
+    }
+
+    //contoh pointcut dengan format execution
+    // * diawal artinya semuanya, tidak peduli public private
+    // lalu disusul direktori, dimana * kedua mengambil semua method yang ada didalam
+    // dengan method yang parameternya string
+    @Pointcut("execution(* pzn.belajarspringaop.service.HelloService.*(java.lang.String))")
+    public void pointCutHelloServiceStringParam() {
+    }
+
+    @Before("pointCutHelloServiceStringParam()")
+    public void logStringParam(JoinPoint joinPoint) {
+        String value = (String) joinPoint.getArgs()[0];
+        log.info("Execute method with param : {}", value);
     }
 }
 
