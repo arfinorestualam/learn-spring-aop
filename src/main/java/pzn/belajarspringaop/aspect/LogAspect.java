@@ -86,6 +86,25 @@ public class LogAspect {
         String value = (String) joinPoint.getArgs()[0];
         log.info("Execute method with param : {}", value);
     }
+
+    //multiple pointcut, digabungkan dengan &&
+
+    @Pointcut("execution(* pzn.belajarspringaop.service.*.*(..))")
+    public void pointcutServicePackage() {}
+
+    @Pointcut("bean(*Service)")
+    public void pointcutServiceBean() {}
+
+    @Pointcut("execution(public * *(..))")
+    public void pointcutPublicMethod() {}
+
+    @Pointcut("pointcutServicePackage() && pointcutServiceBean() && pointcutPublicMethod()")
+    public void publicMethodForService() {}
+
+    @Before("publicMethodForService()")
+    public void logAllServiceMethod() {
+        log.info("Log for all service methods");
+    }
 }
 
 //join point dengan beraturan dan berjalan hanya di level method adalah
